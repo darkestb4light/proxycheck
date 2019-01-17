@@ -94,10 +94,10 @@ Usage:
 [Options]
 
 -H <header...>		    # One or more headers to include in the request. If
-			                # using more than one, they should be appended.
-			                # Supported headers:
-			                #	- A or a (adds Accept header)
-			                #	- C or c (adds Host header)
+			    		# using more than one, they should be appended.
+			            # Supported headers:
+			            #	- A or a (adds Accept header)
+			            #	- C or c (adds Host header)
 			                #	- H or h (adds Connection header)
 			                #	- U or u (adds User-Agent header)
 			                # [NOTE]: Some servers expect certain headers (such
@@ -169,39 +169,39 @@ Usage:
 
 [Arguments]
 
--p <proxy-port>		    # The proxy server's listening TCP port.
-			#
--r [<request ...>]	  # Domain(s)/URL(s) to send via -s and -p arguments. If
-			                # you decide to send multiple requests, they can be
-			                # enclosed in quotes and delimted by:
-			                #	  - commas
-			                #	  - pipes
-			                #	  - semi-colons
-			                #	  - spaces
-			                # When <request> is omitted, requests are retrieved
-			                # via standard input (stdin). This can be achieved
-			                # with two main approaches:
-			                #	  1. Manually via standard input (stdin)
-			                #	  2. Piping standard output (stdout)
-			                # For approach #1, requests can be manually entered:
-			                #	  A. Several on one line (following delimiters)
-			                #	  B. One per line
-			                # The above can be combined as well. Sending an EOF
-			                # (end-of-file) will complete the input and allow
-			                # for further processing of requests.
-			                # For approach #2, requests can be sent via stdout of
-			                # one process to the stdin of this tool. For example:
-			                #	  A. echo "request1...requestN" | proxycheck ...
-			                #	  B. cat request.txt | proxycheck ...
-			                # [Note]: For approach 2B, requests can be processed,
-			                # following the same rules as approach #1A and/or #1B.
-			                # [Note]: If <request> exists and either approach #1 or
-			                # #2 is attempted, <request> takes precedence and other
-			                # request processing methods are ignored.
-			                # [Note]: If -R option is used and it appears before
-			                # this argument, then -R takes priority.
-			                #
--s <proxy-server>	    # The proxy server to send requests through.
+-p <proxy-port>		 # The proxy server's listening TCP port.
+					 #
+-r [<request ...>]	 # Domain(s)/URL(s) to send via -s and -p arguments. If
+			         # you decide to send multiple requests, they can be
+			         # enclosed in quotes and delimted by:
+			         #	  - commas
+			         #	  - pipes
+			         #	  - semi-colons
+			         #	  - spaces
+			         # When <request> is omitted, requests are retrieved
+			         # via standard input (stdin). This can be achieved
+			         # with two main approaches:
+			         #	  1. Manually via standard input (stdin)
+			         #	  2. Piping standard output (stdout)
+			         # For approach #1, requests can be manually entered:
+			         #	  A. Several on one line (following delimiters)
+			         #	  B. One per line
+			         # The above can be combined as well. Sending an EOF
+			         # (end-of-file) will complete the input and allow
+			         # for further processing of requests.
+			         # For approach #2, requests can be sent via stdout of
+			         # one process to the stdin of this tool. For example:
+			         #	  A. echo "request1...requestN" | proxycheck ...
+			         #	  B. cat request.txt | proxycheck ...
+			         # [Note]: For approach 2B, requests can be processed,
+			         # following the same rules as approach #1A and/or #1B.
+			         # [Note]: If <request> exists and either approach #1 or
+			         # #2 is attempted, <request> takes precedence and other
+			         # request processing methods are ignored.
+					 # [Note]: If -R option is used and it appears before
+			         # this argument, then -R takes priority.
+			         #
+-s <proxy-server>	 # The proxy server to send requests through.
 
 ```
 ## Examples
