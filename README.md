@@ -93,116 +93,115 @@ Usage:
 
 [Options]
 
--H <header...>		    # One or more headers to include in the request. If
-			    		# using more than one, they should be appended.
-			            # Supported headers:
-			            #	- A or a (adds Accept header)
-			            #	- C or c (adds Host header)
-			                #	- H or h (adds Connection header)
-			                #	- U or u (adds User-Agent header)
-			                # [NOTE]: Some servers expect certain headers (such
-			                # as a Host header) and might respond with an error
-			                # (e.g. HTTP 400). In such cases, adding a header is
-			                # advised to minimize false results.
-			                #
--I <sec>		          # The amount of time (in seconds) to wait for input
-			                # from a request to be retrieved via <proxy-server>.
-			                # This timer is reset each time data is read via the
-			                # socket. Valid range is between: 0 - 120 seconds.
-			                # When omitted, it defaults to: 10 seconds.
-			                #
--L <request-log>	    # Send stdout and stderr strams to <request-log>. If
-			                # <request-log> does not exist, it will be created
-			                # or an error is returned. If <request-log> does
-			                # exist, it is appended to.
-			                #
--M <method>		        # HTTP method to use for <request>. Must be one of:
-			                #   - CONNECT
-			                #   - GET
-			                #   - HEAD
-			                #   - OPTIONS
-			                # If omitted, an HTTP GET will be used. If CONNECT
-			                # is specified, then HTTP GET will be used for the
-			                # subsequent request. When CONNECT is specified and
-			                # a scheme exists in <request>, then HTTP CONNECT
-			                # will be implied and an HTTP GET will be used for
-			                # the follow-up request. When <scheme> is HTTPS://
-			                # and not already present in <request>, CONNECT will
-			                # be used, followed by <method>. Otherwise, <method>
-			                # will be used for <request>.
-			                # [NOTE]: <method> is not case-sensitive.
-			                #
--O <sec>		          # The amount of time (in seconds) to wait for output
-			                # to be sent via <proxy-server>. The timer is reset
-			                # each time data is sent via the socket. If specified,
-			                # the range is between: 0 - 120 seconds.
-			                # When omitted, defaults to: 10 seconds.
-			                #
--P <request-port>	    # Forces <request-port> to override the default port
-			                # used where a scheme does not exist in <request>.
-			                # A request will default to:
-			                #	  - 80 (HTTP:// scheme)
-			                #	  - 443 (HTTPS:// scheme)
-			                #
--R <request-file>	    # Proceses <request-file> containing domain(s)/URL(s)
-			                # to send via -s and -p arguments. If this option is
-			                # specified, it overrides -r argument as long as the
-			                # option appears before -r in the argument list. The
-			                # requests can be entered one per line and/or many
-			                # per line. In the latter case, they should follow
-			                # legal delimiters (see: -r argument).
-			                #
--S <scheme>		        # The scheme to use for <request>. It must be one of
-			                # HTTP:// or HTTPS://. If a scheme is present within
-			                # <request>, then <scheme> is ignored. Otherwise,
-			                # <scheme> is applied to domain/URL in <request>.
-			                # [NOTE]: <scheme> is not case-sensitive.
+-H <header...>		# One or more headers to include in the request. If
+		    	# using more than one, they should be appended.
+		    	# Supported headers:
+		    	#	- A or a (adds Accept header)
+		    	#	- C or c (adds Host header)
+		    	#	- H or h (adds Connection header)
+			#	- U or u (adds User-Agent header)
+			# [NOTE]: Some servers expect certain headers (such
+			# as a Host header) and might respond with an error
+			# (e.g. HTTP 400). In such cases, adding a header is
+			# advised to minimize false results.
+			#
+-I <sec>		# The amount of time (in seconds) to wait for input
+			# from a request to be retrieved via <proxy-server>.
+			# This timer is reset each time data is read via the
+			# socket. Valid range is between: 0 - 120 seconds.
+			# When omitted, it defaults to: 10 seconds.
+			#
+-L <request-log>	# Send stdout and stderr strams to <request-log>. If
+			# <request-log> does not exist, it will be created
+			# or an error is returned. If <request-log> does
+			# exist, it is appended to.
+			#
+-M <method>		# HTTP method to use for <request>. Must be one of:
+			#   - CONNECT
+			#   - GET
+			#   - HEAD
+			#   - OPTIONS
+			# If omitted, an HTTP GET will be used. If CONNECT
+			# is specified, then HTTP GET will be used for the
+			# subsequent request. When CONNECT is specified and
+			# a scheme exists in <request>, then HTTP CONNECT
+			# will be implied and an HTTP GET will be used for
+			# the follow-up request. When <scheme> is HTTPS://
+			# and not already present in <request>, CONNECT will
+			# be used, followed by <method>. Otherwise, <method>
+			# will be used for <request>.
+			# [NOTE]: <method> is not case-sensitive.
+			#
+-O <sec>		# The amount of time (in seconds) to wait for output
+			# to be sent via <proxy-server>. The timer is reset
+			# each time data is sent via the socket. If specified,
+			# the range is between: 0 - 120 seconds.
+			# When omitted, defaults to: 10 seconds.
+			#
+-P <request-port>	# Forces <request-port> to override the default port
+			# used where a scheme does not exist in <request>.
+			# A request will default to:
+			#	  - 80 (HTTP:// scheme)
+			#	  - 443 (HTTPS:// scheme)
+			#
+-R <request-file>	# Proceses <request-file> containing domain(s)/URL(s)
+			# to send via -s and -p arguments. If this option is
+			# specified, it overrides -r argument as long as the
+			# option appears before -r in the argument list. The
+			# requests can be entered one per line and/or many
+			# per line. In the latter case, they should follow
+			# legal delimiters (see: -r argument).
+			#
+-S <scheme>		# The scheme to use for <request>. It must be one of
+			# HTTP:// or HTTPS://. If a scheme is present within
+			# <request>, then <scheme> is ignored. Otherwise,
+			# <scheme> is applied to domain/URL in <request>.
+			# [NOTE]: <scheme> is not case-sensitive.
 -V <verbosity-level>	# The verbosity level for output. It must be one of
-			                #	  - 1 (normal output and request payload only)
-			                #	  - 2 (normal output and response payload only)
-			                #	  - 3 (combines #1 and #2)
-			                # [NOTE]: Requests/Responses are sent to standard
-			                # error (stderr)
-			                # [NOTE]: When -L is used, they will be directed to
-			                # <request-log>; redirect stderr if needed.
-			                #
+			#	  - 1 (normal output and request payload only)
+			#	  - 2 (normal output and response payload only)
+			#	  - 3 (combines #1 and #2)
+			# [NOTE]: Requests/Responses are sent to standard
+			# error (stderr)
+			# [NOTE]: When -L is used, they will be directed to
+			# <request-log>; redirect stderr if needed.
+		   	#
 
 [Arguments]
 
 -p <proxy-port>		 # The proxy server's listening TCP port.
-					 #
+			 #
 -r [<request ...>]	 # Domain(s)/URL(s) to send via -s and -p arguments. If
-			         # you decide to send multiple requests, they can be
-			         # enclosed in quotes and delimted by:
-			         #	  - commas
-			         #	  - pipes
-			         #	  - semi-colons
-			         #	  - spaces
-			         # When <request> is omitted, requests are retrieved
-			         # via standard input (stdin). This can be achieved
-			         # with two main approaches:
-			         #	  1. Manually via standard input (stdin)
-			         #	  2. Piping standard output (stdout)
-			         # For approach #1, requests can be manually entered:
-			         #	  A. Several on one line (following delimiters)
-			         #	  B. One per line
-			         # The above can be combined as well. Sending an EOF
-			         # (end-of-file) will complete the input and allow
-			         # for further processing of requests.
-			         # For approach #2, requests can be sent via stdout of
-			         # one process to the stdin of this tool. For example:
-			         #	  A. echo "request1...requestN" | proxycheck ...
-			         #	  B. cat request.txt | proxycheck ...
-			         # [Note]: For approach 2B, requests can be processed,
-			         # following the same rules as approach #1A and/or #1B.
-			         # [Note]: If <request> exists and either approach #1 or
-			         # #2 is attempted, <request> takes precedence and other
-			         # request processing methods are ignored.
-					 # [Note]: If -R option is used and it appears before
-			         # this argument, then -R takes priority.
-			         #
+			 # you decide to send multiple requests, they can be
+			 # enclosed in quotes and delimted by:
+			 #	  - commas
+			 #	  - pipes
+			 #	  - semi-colons
+			 #	  - spaces
+			 # When <request> is omitted, requests are retrieved
+			 # via standard input (stdin). This can be achieved
+			 # with two main approaches:
+			 #	  1. Manually via standard input (stdin)
+			 #	  2. Piping standard output (stdout)
+			 # For approach #1, requests can be manually entered:
+			 #	  A. Several on one line (following delimiters)
+			 #	  B. One per line
+			 # The above can be combined as well. Sending an EOF
+			 # (end-of-file) will complete the input and allow
+			 # for further processing of requests.
+			 # For approach #2, requests can be sent via stdout of
+			 # one process to the stdin of this tool. For example:
+			 #	  A. echo "request1...requestN" | proxycheck ...
+			 #	  B. cat request.txt | proxycheck ...
+			 # [Note]: For approach 2B, requests can be processed,
+			 # following the same rules as approach #1A and/or #1B.
+			 # [Note]: If <request> exists and either approach #1 or
+			 # #2 is attempted, <request> takes precedence and other
+			 # request processing methods are ignored.
+			 # [Note]: If -R option is used and it appears before
+			 # this argument, then -R takes priority.
+			 #
 -s <proxy-server>	 # The proxy server to send requests through.
-
 ```
 ## Examples
 
