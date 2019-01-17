@@ -1,5 +1,13 @@
 # proxycheck
 
+## TODO
+
+This is a work in progress and all options/argumennts and functionality are subject to change. Code will be uploaded soon, once I get to a good stopping point to upload it. That said, everything noted in this README is up-to-date and reflects the current capability
+
+## Language
+
+Written in C
+
 ## Purpose:
 
 A simple PoC for testing various domains/URLs via a proxy
