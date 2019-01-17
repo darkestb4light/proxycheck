@@ -125,10 +125,10 @@ Usage:
 			# exist, it is appended to.
 			#
 -M <method>		# HTTP method to use for <request>. Must be one of:
-			#   - CONNECT
-			#   - GET
-			#   - HEAD
-			#   - OPTIONS
+			#   	- CONNECT
+			#   	- GET
+			#   	- HEAD
+			#   	- OPTIONS
 			# If omitted, an HTTP GET will be used. If CONNECT
 			# is specified, then HTTP GET will be used for the
 			# subsequent request. When CONNECT is specified and
