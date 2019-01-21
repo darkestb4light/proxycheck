@@ -92,7 +92,11 @@ I can get around this.
 
 ## Compile:
 
-gcc -o proxycheck proxycheck.c
+gcc -o proxycheck proxycheck_main.c proxycheck.c
+
+- OR -
+
+gcc -std=c99 -o proxycheck proxycheck_main.c proxycheck.c
 
 
 ## Usage
