@@ -220,26 +220,96 @@ Connecting the a proxy (localhost), listing on port 8080/TCP and checking "www.f
 ```
 proxycheck -s localhost -p 8080 -r www.foobar.com
 
-Sun Jan 20 19:40:55 2019: proxycheck: validation complete - starting
-Sun Jan 20 19:40:55 2019: proxycheck: building request(s)
-Sun Jan 20 19:40:55 2019: proxycheck: requests built: 1
-Sun Jan 20 19:40:55 2019: proxycheck: client [neo] > server [localhost/8080]
-Sun Jan 20 19:40:55 2019: proxycheck: processing request(s) [socket proto: TCP]
+...
 Sun Jan 20 19:40:56 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:400
-Sun Jan 20 19:40:56 2019: proxycheck: processing complete
-Sun Jan 20 19:40:56 2019: proxycheck: cleaning up
-Sun Jan 20 19:40:56 2019: proxycheck: finished
+...
 ```
 Notice the result was a status of HTTP 400. This can happen when a Host header is required by the server. This will happen when using HTTP/1.1 for example. By adding the Host header, we can see a different result:
 ```
-Sun Jan 20 19:45:25 2019: proxycheck: validation complete - starting
-Sun Jan 20 19:45:25 2019: proxycheck: include header=Host
-Sun Jan 20 19:45:25 2019: proxycheck: building request(s)
-Sun Jan 20 19:45:25 2019: proxycheck: requests built: 1
-Sun Jan 20 19:45:25 2019: proxycheck: client [neo] > server [localhost/8080]
-Sun Jan 20 19:45:25 2019: proxycheck: processing request(s) [socket proto: TCP]
+proxycheck -s localhost -p 8080 -r www.foobar.com -H h
+
+...
 Sun Jan 20 19:45:25 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:200
-Sun Jan 20 19:45:25 2019: proxycheck: processing complete
-Sun Jan 20 19:45:25 2019: proxycheck: cleaning up
-Sun Jan 20 19:45:25 2019: proxycheck: finished
+...
+```
+Another example showing multiple requests, using the HEAD method, with various delimiters (we also add Accept, Connection, User-Agent, and Host headers):
+```
+proxycheck -H acuh -s localhost -p 8080 -r "www.foobar.com; http://www.example.com/some/page.html, www.google.com|www.bing.com;github.com"
+
+...
+Sun Jan 20 19:54:12 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:400
+Sun Jan 20 19:54:12 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=www.example.com: port=80: path=/some/page.html: ver=HTTP/1.1: status:501
+Sun Jan 20 19:54:12 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=www.google.com: port=80: path=/: ver=HTTP/1.1: status:405
+Sun Jan 20 19:54:12 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=www.bing.com: port=80: path=/: ver=HTTP/1.1: status:200
+Sun Jan 20 19:54:12 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=github.com: port=80: path=/: ver=HTTP/1.1: status:301
+...
+```
+We received some status warnings such as HTTP 405 and even a HTTP 501 - This example shows the previous execution, but we turn on verbosity level 3 so we can see the requests and the responses:
+```
+...
+Sun Jan 20 19:57:05 2019: proxycheck: STANDARD: dst=localhost: dport=8080: request:
+head http://www.foobar.com/ HTTP/1.1
+Host: www.foobar.com
+User-Agent: proxycheck
+Accept: */*
+Connection: close
+
+
+
+Sun Jan 20 19:57:05 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.1 400 Bad Request
+Server: nginx/1.14.1
+Date: Mon, 21 Jan 2019 02:57:05 GMT
+Content-Type: text/html
+Content-Length: 173
+Connection: close
+...
+Sun Jan 20 19:57:05 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:400
+Sun Jan 20 19:57:05 2019: proxycheck: STANDARD: dst=localhost: dport=8080: request:
+head http://www.example.com/some/page.html HTTP/1.1
+Host: www.example.com
+User-Agent: proxycheck
+Accept: */*
+Connection: close
+
+
+
+Sun Jan 20 19:57:05 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.0 501 Not Implemented
+Content-Type: text/html
+Content-Length: 357
+Connection: close
+Date: Mon, 21 Jan 2019 02:57:05 GMT
+Server: ECSF (oxr/83C5)
+...
+Sun Jan 20 19:57:05 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=head: domain=www.example.com: port=80: path=/some/page.html: ver=HTTP/1.1: status:501
+Sun Jan 20 19:57:05 2019: proxycheck: STANDARD: dst=localhost: dport=8080: request:
+head http://www.google.com/ HTTP/1.1
+Host: www.google.com
+User-Agent: proxycheck
+Accept: */*
+Connection: close
+
+
+
+Sun Jan 20 19:57:05 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/html; charset=UTF-8
+Referrer-Policy: no-referrer
+Content-Length: 1589
+Date: Mon, 21 Jan 2019 02:57:05 GMT
+Connection: close
+...
+```
+So, we can see that either the specififed method (HEAD) is not implemented or allowed. So, we issue the check again, but leverage the HTTP GET instead of HEAD (we turn off the verbosity level, however):
+```
+proxycheck -H acuh -s localhost -p 8080 -r "www.foobar.com; http://www.example.com/some/page.html, www.google.com|www.bing.com;github.com"
+
+...
+Sun Jan 20 20:00:55 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:200
+Sun Jan 20 20:00:55 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.example.com: port=80: path=/some/page.html: ver=HTTP/1.1: status:404
+Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.google.com: port=80: path=/: ver=HTTP/1.1: status:200
+Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.bing.com: port=80: path=/: ver=HTTP/1.1: status:200
+Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=github.com: port=80: path=/: ver=HTTP/1.1: status:301
+...
 ```
