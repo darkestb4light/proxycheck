@@ -230,3 +230,16 @@ Sun Jan 20 19:40:56 2019: proxycheck: processing complete
 Sun Jan 20 19:40:56 2019: proxycheck: cleaning up
 Sun Jan 20 19:40:56 2019: proxycheck: finished
 ```
+Notice the result was a status of HTTP 400. This can happen when a Host header is required by the server. This will happen when using HTTP/1.1 for example. By adding the Host header, we can see a different result:
+```
+Sun Jan 20 19:45:25 2019: proxycheck: validation complete - starting
+Sun Jan 20 19:45:25 2019: proxycheck: include header=Host
+Sun Jan 20 19:45:25 2019: proxycheck: building request(s)
+Sun Jan 20 19:45:25 2019: proxycheck: requests built: 1
+Sun Jan 20 19:45:25 2019: proxycheck: client [neo] > server [localhost/8080]
+Sun Jan 20 19:45:25 2019: proxycheck: processing request(s) [socket proto: TCP]
+Sun Jan 20 19:45:25 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:200
+Sun Jan 20 19:45:25 2019: proxycheck: processing complete
+Sun Jan 20 19:45:25 2019: proxycheck: cleaning up
+Sun Jan 20 19:45:25 2019: proxycheck: finished
+```
