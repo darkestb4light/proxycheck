@@ -94,7 +94,7 @@ I can get around this.
 
 gcc -o proxycheck proxycheck_main.c proxycheck.c
 
-- OR -
+OR
 
 gcc -std=c99 -o proxycheck proxycheck_main.c proxycheck.c
 
