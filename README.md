@@ -35,7 +35,7 @@ At a high level, the tool:
 - evaluates and outputs the results
 
 The tool evaluates an HTTP status response in a binary fasion 
-from the perspective of the request either mdae it past the 
+from the perspective of the request either made it past the 
 proxy or it didn't.
 
 There are two high level flows, given a request:
@@ -46,34 +46,36 @@ With a CONNECT flow, the request is conducted by establishing a
 TCP connection with the server (most likely the proxy), sending 
 the request through the socket, and retrieving the response. Upon 
 obtaining the response, it is next evaluated to determine success 
-or failure. If response is anything other than an HTTP 200, an 
-error is generated and no further processing on that request is 
-attempted. If, however, the CONNECT results in an HTTP 200, then 
-another request is sent to the upstream server, following the 
-STANDARD flow.
+or failure. If the response is anything other than an HTTP 200, 
+an error is generated and no further processing on that request 
+is attempted. If the CONNECT results in an HTTP 200, then another
+request is sent to the upstream server following the STANDARD
+flow.
 
 With the STANDARD flow, the request is sent via the previously 
-created socket as long as it follows a CONNECT flow. Otherwise, 
-a new socket the request is conducted by establishing a TCP 
-connection with the server (most likely the proxy). Next, the 
-request is sent through the socket, before retrieving the response.
+created socket as long as it previously followed a CONNECT flow. 
+Otherwise, a new socket the request is conducted by establishing a 
+TCP connection with the server (most likely the proxy). Next, the 
+request is sent through the socket before retrieving the response.
 
 It is up to the user to determine what success versus failure is 
-from an audit perspective. After all, it can vary, on the use case:
+from an audit perspective. After all, it can vary on the use case:
 
-Example: You may want audit whether a list of domains/URLs are 
+Example: You may want to audit whether a list of domains/URLs are 
 reachable. If this results in the contrary, it could mean there is 
 an issue that needs to be investigated (network, proxy, logical error 
-in policy, etc.). In this case anything other than a success is most 
+in policy, etc.). In this case, anything other than a success is most 
 likely not a good thing.
 
-Example: You may want audit whether a list of domains/URLs are NOT 
-reachable. In this example, if a request is successful, it most likely 
+Example: You may want to audit whether a list of domains/URLs are NOT 
+reachable. In this case, if a request is successful, it most likely 
 means an issue with the defined proxy policy ACLs. Again, most likely 
 not a good thing.
 
-The user can take the results and determine the best course of action, 
-given their use case(s).
+In the end, the user can take the results and determine the best course 
+of action, given their use case(s). The results can be fed into a tool 
+designed for ingesting events. From here, further metrics, alerts, etc. 
+can be created. Finally, action can be taken if necessary.
 
 ## Supported Platforms
 
@@ -83,9 +85,10 @@ Compiles and runs on:
 - Linux (such as CentOS)
 - Windows (requires cygwin1.dll for native use) or Cygwin terminal **
 
-** There is some funtionality that odes not (yet) work on Windows - this has to do with:
--I and -O options. The reason is how Windows implements sockets. So, it does not respect 
-how I am manipulating the socket timeout thresholds... I will work on this.
+** There is some funtionality that does not (yet) work on Windows. Current known issues:
+- Option: "-I" and "-O" -- The reason is how Windows implements sockets. Itt does not 
+respect how I am manipulating the socket timeout thresholds... I will work to see if 
+I can get around this.
 
 ## Compile:
 
