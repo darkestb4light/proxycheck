@@ -216,4 +216,17 @@ Usage:
 ```
 ## Examples
 
-Coming...
+Connecting the a proxy (localhost), listing on port 8080/TCP and checking "www.foobar.com": 
+```
+proxycheck -s localhost -p 8080 -r www.foobar.com
+
+Sun Jan 20 19:40:55 2019: proxycheck: validation complete - starting
+Sun Jan 20 19:40:55 2019: proxycheck: building request(s)
+Sun Jan 20 19:40:55 2019: proxycheck: requests built: 1
+Sun Jan 20 19:40:55 2019: proxycheck: client [neo] > server [localhost/8080]
+Sun Jan 20 19:40:55 2019: proxycheck: processing request(s) [socket proto: TCP]
+Sun Jan 20 19:40:56 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:400
+Sun Jan 20 19:40:56 2019: proxycheck: processing complete
+Sun Jan 20 19:40:56 2019: proxycheck: cleaning up
+Sun Jan 20 19:40:56 2019: proxycheck: finished
+```
