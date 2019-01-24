@@ -45,7 +45,7 @@ There are two high level flows, given a request:
 With a CONNECT flow, the request is conducted by establishing a 
 TCP connection with the server (most likely the proxy), sending 
 the request through the socket, and retrieving the response. Upon 
-obtaining the response, it is next evaluated to determine success 
+obtaining the response, it is evaluated to determine success 
 or failure. If the response is anything other than an HTTP 200, 
 an error is generated and no further processing on that request 
 is attempted. If the CONNECT results in an HTTP 200, then another
@@ -54,9 +54,10 @@ flow.
 
 With the STANDARD flow, the request is sent via the previously 
 created socket as long as it previously followed a CONNECT flow. 
-Otherwise, a new socket the request is conducted by establishing a 
-TCP connection with the server (most likely the proxy). Next, the 
-request is sent through the socket before retrieving the response.
+Otherwise, a new socket is created with the server (most likely 
+the proxy). Next, the request is sent through the socket before 
+retrieving the response. The response is evaluated against one 
+of several different status codes.
 
 It is up to the user to determine what success versus failure is 
 from an audit perspective. After all, it can vary on the use case:
@@ -74,8 +75,8 @@ not a good thing.
 
 In the end, the user can take the results and determine the best course 
 of action, given their use case(s). The results can be fed into a tool 
-designed for ingesting events. From here, further metrics, alerts, etc. 
-can be created. Finally, action can be taken if necessary.
+designed for ingesting events. Further metrics, alerts, etc. can be created. 
+Finally, action can be taken from these results if necessary or desired.
 
 ## Supported Platforms
 
