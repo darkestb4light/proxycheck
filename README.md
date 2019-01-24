@@ -306,7 +306,7 @@ Date: Mon, 21 Jan 2019 02:57:05 GMT
 Connection: close
 ...
 ```
-So, we can see that either the specififed method (HEAD) is not implemented or allowed. So, we issue the check again, but leverage the HTTP GET instead of HEAD (we turn off the verbosity level, however):
+We can see that either the specififed method (HEAD) is not implemented or allowed. We issue the check again but leverage the HTTP GET (which is the current default) instead of the HEAD method. Verbosity level is omitted thos time since we no longer need that level of detail:
 ```
 proxycheck -H acuh -s localhost -p 8080 -r "www.foobar.com; http://www.example.com/some/page.html, www.google.com|www.bing.com;github.com"
 
