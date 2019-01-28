@@ -10,7 +10,7 @@ Written in C
 
 ## Purpose:
 
-A simple PoC for testing various domains/URLs via a proxy
+A proof-of-concept tool for testing various domains/URLs via a proxy
 
 ## Overview
 
