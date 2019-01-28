@@ -87,7 +87,7 @@ Compiles and runs on:
 - Windows (requires cygwin1.dll for native use) or Cygwin terminal **
 
 ** There is some funtionality that does not (yet) work on Windows. Current known issues:
-- Option: "-I" and "-O" -- The reason is how Windows implements sockets. Itt does not 
+- Option: "-I" and "-O" -- The reason is how Windows implements sockets. It does not 
 respect how I am manipulating the socket timeout thresholds... I will work to see if 
 I can get around this.
 
@@ -109,12 +109,29 @@ Usage:
 
 [Options]
 
+-B [resp-buf]		# The response buffer to allocate for each request. By
+			# By default, a sufficient buffer is allocated to hold
+			# HTTP response status only. If the option is provided
+			# and [resp-buf] is omitted, then the buffer will be
+			# increased to 512 bytes. Setting the buffer can be
+			# useful when using -V to view responses.
+			# [NOTE]: When [resp-buf] is provided, the range is:
+			# 10 bytes - 65535 bytes.
+			#
+-D [interval]		# The amount of time (in seconds) to sleep between
+			# processing requests via <proxy-server>. Should
+			# [interval] be omitted, the amount of time sleeping
+			# is 3600 seconds.
+			# [NOTE]: If -L is specified, events are written to
+			# <request-log>. Otherwise, the events are written to
+			# the default log: "proxycheck.log".
+			#
 -H <header...>		# One or more headers to include in the request. If
-		    	# using more than one, they should be appended.
-		    	# Supported headers:
-		    	#	- A or a (adds Accept header)
-		    	#	- C or c (adds Host header)
-		    	#	- H or h (adds Connection header)
+			# using more than one, they should be appended.
+			# Supported headers:
+			#	- A or a (adds Accept header)
+			#	- C or c (adds Host header)
+			#	- H or h (adds Connection header)
 			#	- U or u (adds User-Agent header)
 			# [NOTE]: Some servers expect certain headers (such
 			# as a Host header) and might respond with an error
@@ -133,10 +150,10 @@ Usage:
 			# exist, it is appended to.
 			#
 -M <method>		# HTTP method to use for <request>. Must be one of:
-			#   	- CONNECT
-			#   	- GET
-			#   	- HEAD
-			#   	- OPTIONS
+			#  - CONNECT
+			#  - GET
+			#  - HEAD
+			#  - OPTIONS
 			# If omitted, an HTTP GET will be used. If CONNECT
 			# is specified, then HTTP GET will be used for the
 			# subsequent request. When CONNECT is specified and
@@ -157,8 +174,8 @@ Usage:
 -P <request-port>	# Forces <request-port> to override the default port
 			# used where a scheme does not exist in <request>.
 			# A request will default to:
-			#	  - 80 (HTTP:// scheme)
-			#	  - 443 (HTTPS:// scheme)
+			#	- 80 (HTTP:// scheme)
+			#	- 443 (HTTPS:// scheme)
 			#
 -R <request-file>	# Proceses <request-file> containing domain(s)/URL(s)
 			# to send via -s and -p arguments. If this option is
@@ -173,51 +190,56 @@ Usage:
 			# <request>, then <scheme> is ignored. Otherwise,
 			# <scheme> is applied to domain/URL in <request>.
 			# [NOTE]: <scheme> is not case-sensitive.
+			#
 -V <verbosity-level>	# The verbosity level for output. It must be one of
-			#	  - 1 (normal output and request payload only)
-			#	  - 2 (normal output and response payload only)
-			#	  - 3 (combines #1 and #2)
+			#	- 1 (normal output and request payload only)
+			#	- 2 (normal output and response payload only)
+			#	- 3 (combines #1 and #2)
 			# [NOTE]: Requests/Responses are sent to standard
 			# error (stderr)
 			# [NOTE]: When -L is used, they will be directed to
 			# <request-log>; redirect stderr if needed.
-		   	#
+			#
 
 [Arguments]
 
--p <proxy-port>		 # The proxy server's listening TCP port.
-			 #
--r [<request ...>]	 # Domain(s)/URL(s) to send via -s and -p arguments. If
-			 # you decide to send multiple requests, they can be
-			 # enclosed in quotes and delimted by:
-			 #	  - commas
-			 #	  - pipes
-			 #	  - semi-colons
-			 #	  - spaces
-			 # When <request> is omitted, requests are retrieved
-			 # via standard input (stdin). This can be achieved
-			 # with two main approaches:
-			 #	  1. Manually via standard input (stdin)
-			 #	  2. Piping standard output (stdout)
-			 # For approach #1, requests can be manually entered:
-			 #	  A. Several on one line (following delimiters)
-			 #	  B. One per line
-			 # The above can be combined as well. Sending an EOF
-			 # (end-of-file) will complete the input and allow
-			 # for further processing of requests.
-			 # For approach #2, requests can be sent via stdout of
-			 # one process to the stdin of this tool. For example:
-			 #	  A. echo "request1...requestN" | proxycheck ...
-			 #	  B. cat request.txt | proxycheck ...
-			 # [Note]: For approach 2B, requests can be processed,
-			 # following the same rules as approach #1A and/or #1B.
-			 # [Note]: If <request> exists and either approach #1 or
-			 # #2 is attempted, <request> takes precedence and other
-			 # request processing methods are ignored.
-			 # [Note]: If -R option is used and it appears before
-			 # this argument, then -R takes priority.
-			 #
--s <proxy-server>	 # The proxy server to send requests through.
+-h			# Output this menu and exit.
+			#
+-p <proxy-port>		# The proxy server's listening TCP port.
+			#
+-r [<request ...>]	# Domain(s)/URL(s) to send via -s and -p arguments. If
+			# you decide to send multiple requests, they can be
+			# enclosed in quotes and delimted by:
+			#	- commas
+			#	- pipes
+			#	- semi-colons
+			#	- spaces
+			# When <request> is omitted, requests are retrieved
+			# via standard input. This can be achieved with two
+			# main approaches:
+			#	1. Manually entering via this program's stdin
+			#	2. Piping stdout into this program's stdin
+			# For approach #1, requests can be manually entered:
+			#	A. Several on one line (following delimiters)
+			#	B. One per line
+			# The above can be combined as well. Sending an EOF
+			# (end-of-file) will complete the input and allow
+			# for further processing of requests.
+			# For approach #2, requests can be sent via stdout of
+			# one process to the stdin of this tool. For example:
+			#	A. echo "request1...requestN" | proxycheck ...
+			#	B. cat request.txt | proxycheck ...
+			# [Note]: For approach 2B, requests can be processed,
+			# following the same rules as approach #1A and/or #1B.
+			# [Note]: If <request> exists and either approach #1 or
+			# #2 is attempted, <request> takes precedence and other
+			# request processing methods are ignored.
+			# [Note]: If -R option is used and it appears before
+			# this argument, then -R takes priority.
+			#
+-s <proxy-server>	# The proxy server to send requests through.
+			#
+-v			# Output current program version and exit.
 ```
 ## Examples
 
