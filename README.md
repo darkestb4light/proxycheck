@@ -122,6 +122,7 @@ Usage:
 			# processing requests via <proxy-server>. Should
 			# [interval] be omitted, the amount of time sleeping
 			# is 3600 seconds.
+			# [NOTE]: Tool will run as a background daemon process.
 			# [NOTE]: If -L is specified, events are written to
 			# <request-log>. Otherwise, the events are written to
 			# the default log: "proxycheck.log".
