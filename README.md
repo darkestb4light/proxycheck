@@ -110,7 +110,7 @@ Usage:
 [Options]
 
 -B [resp-buf]		# The response buffer to allocate for each request. By
-			# By default, a sufficient buffer is allocated to hold
+			# default, a sufficient buffer is allocated to hold
 			# HTTP response status only. If the option is provided
 			# and [resp-buf] is omitted, then the buffer will be
 			# increased to 512 bytes. Setting the buffer can be
