@@ -84,12 +84,7 @@ Compiles and runs on:
 
 - Unix (such as FreeBSD or variants like OS X)
 - Linux (such as CentOS)
-- Windows (requires cygwin1.dll for native use) or Cygwin terminal **
-
-** There is some funtionality that does not (yet) work on Windows. Current known issues:
-- Option: "-I" and "-O" -- The reason is how Windows implements sockets. It does not 
-respect how I am manipulating the socket timeout thresholds... I will work to see if 
-I can get around this.
+- Windows (requires cygwin1.dll for native use via a command prompt) or it can operate via a Cygwin terminal if preferred
 
 ## Compile:
 
