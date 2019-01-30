@@ -140,7 +140,7 @@ Usage:
 			# socket. Valid range is between: 0 - 120 seconds.
 			# When omitted, it defaults to: 10 seconds.
 			#
--L <request-log>	# Send stdout and stderr strams to <request-log>. If
+-L <request-log>	# Send stdout and stderr streams to <request-log>. If
 			# <request-log> does not exist, it will be created
 			# or an error is returned. If <request-log> does
 			# exist, it is appended to.
@@ -191,8 +191,7 @@ Usage:
 			#	- 1 (normal output and request payload only)
 			#	- 2 (normal output and response payload only)
 			#	- 3 (combines #1 and #2)
-			# [NOTE]: Requests/Responses are sent to standard
-			# error (stderr)
+			# [NOTE]: Requests/Responses are sent to stderr
 			# [NOTE]: When -L is used, they will be directed to
 			# <request-log>; redirect stderr if needed.
 			#
@@ -236,6 +235,7 @@ Usage:
 -s <proxy-server>	# The proxy server to send requests through.
 			#
 -v			# Output current program version and exit.
+			#
 ```
 ## Examples
 
