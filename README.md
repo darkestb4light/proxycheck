@@ -92,7 +92,9 @@ gcc -o proxycheck proxycheck_main.c proxycheck.c
 
 OR
 
-gcc -std=c99 -o proxycheck proxycheck_main.c proxycheck.c
+gcc -std=<standard> -o proxycheck proxycheck_main.c proxycheck.c
+
+Where <standard> is: c99 or c11
 
 
 ## Usage
@@ -121,6 +123,18 @@ Usage:
 			# [NOTE]: If -L is specified, events are written to
 			# <request-log>. Otherwise, the events are written to
 			# the default log: "proxycheck.log".
+			#
+-F <resp-status ...>	# Attempt to follow one or more HTTP status codes. Must
+			# consist of one or more of the following:
+			#	- 301
+			#	- 302
+			#	- 303
+			#	- 307
+			# [NOTE]: Valid delimiters are the same as <request>.
+			# [NOTE]: Due to where the Location header might be
+			# located among the HTTP response headers, using the
+			# -B option can be useful to ensure the response buffer
+			# is adequate to contain the Location header.
 			#
 -H <header...>		# One or more headers to include in the request. If
 			# using more than one, they should be appended.
