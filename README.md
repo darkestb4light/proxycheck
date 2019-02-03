@@ -2,7 +2,7 @@
 
 ## TODO
 
-This is a work in progress and all options/argumennts and functionality are subject to change. Code will be uploaded soon, once I get to a good stopping point to upload it. That said, everything noted in this README is up-to-date and reflects the current capability
+This is a work in progress -- All options/arguments and functionality are subject to change. Code will be uploaded once I get to a good stopping point to upload it. I'm working on the base set of features that I sought to include when I orignially envisioned this tool. That said, everything noted in this README is up-to-date and reflects the current capability (especially the "Usage" and "Examples" sections). 
 
 ## Language
 
@@ -253,7 +253,7 @@ Usage:
 ```
 ## Examples
 
-Connecting the a proxy (localhost), listing on port 8080/TCP and checking "www.foobar.com": 
+Connecting to a proxy (localhost), listing on port 8080/TCP and checking "www.foobar.com": 
 ```
 proxycheck -s localhost -p 8080 -r www.foobar.com
 
@@ -261,7 +261,7 @@ proxycheck -s localhost -p 8080 -r www.foobar.com
 Sun Jan 20 19:40:56 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:400
 ...
 ```
-Notice the result was a status of HTTP 400. This can happen when a Host header is required by the server. This will happen when using HTTP/1.1 for example. By adding the Host header, we can see a different result:
+Notice the result was a status of HTTP 400. This can happen when a Host header is required by the server, such as when using HTTP/1.1 for example. By adding the Host header, we can see a different result:
 ```
 proxycheck -s localhost -p 8080 -r www.foobar.com -H h
 
@@ -269,7 +269,7 @@ proxycheck -s localhost -p 8080 -r www.foobar.com -H h
 Sun Jan 20 19:45:25 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1: status:200
 ...
 ```
-Another example showing multiple requests, using the HEAD method, with various delimiters (we also add Accept, Connection, User-Agent, and Host headers):
+Another example showing multiple requests. This example is using the HEAD method, with various delimiters. We also add the Accept, Connection, User-Agent, and Host headers:
 ```
 proxycheck -H acuh -s localhost -p 8080 -r "www.foobar.com; http://www.example.com/some/page.html, www.google.com|www.bing.com;github.com"
 
@@ -338,7 +338,7 @@ Date: Mon, 21 Jan 2019 02:57:05 GMT
 Connection: close
 ...
 ```
-We can see that either the specififed method (HEAD) is not implemented or allowed. We issue the check again but leverage the HTTP GET (which is the current default) instead of the HEAD method. Verbosity level is omitted this time since we no longer need that level of detail:
+We can see that either the specififed method (HEAD) is not implemented or it is not allowed. We issue the check again but leverage the HTTP GET (which is the current default) instead of the HEAD method. Note: The verbosity level is omitted since we no longer need the level of detail:
 ```
 proxycheck -H acuh -s localhost -p 8080 -r "www.foobar.com; http://www.example.com/some/page.html, www.google.com|www.bing.com;github.com"
 
@@ -350,7 +350,7 @@ Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: actio
 Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=github.com: port=80: path=/: ver=HTTP/1.1: status:301
 ...
 ```
-In this example, there is a slower response from the server. The default timeout is 10 seconds, but this can still be undesireable if we have a lot of URLs/domains to process -- Note the timeout for each is 10 seconds before proxycheck moves on:
+In this example, there is a slower response from the server. The default timeout per response is 10 seconds, but this can still be undesireable if we have a lot of URLs/domains to process:
 ```
 proxycheck -s localhost -p 8080 -H huac -R test-urls.txt
 
@@ -412,7 +412,7 @@ Sun Feb  3 13:33:58 2019: proxycheck: processing complete
 Sun Feb  3 13:33:58 2019: proxycheck: cleaning up
 Sun Feb  3 13:33:58 2019: proxycheck: finished
 ```
-If we decided that we want to follow these redirects, we cann use "-F" and specify the status codes we want to follow. Note, the result of "unable to follow":
+If we decided that we want to follow these redirects, we can use "-F" and specify the status codes we want to follow. Note: the result of "unable to follow" in each of the responses:
 ```
 proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301,302
 bar.com
@@ -434,7 +434,7 @@ Sun Feb  3 13:38:06 2019: proxycheck: STANDARD: dst=localhost: dport=8080: actio
 Sun Feb  3 13:38:06 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
 ...
 ```
-In the previous example, we tried to follow HTTP 301 and HTTP 302 redirects. However, we recieved a response of "unable to follow" - This is because the HTTP Location header was not found in the orginal response returned. This could be because it truly did not exist or it could be that our response buffer is not large enough to contain the Location header. To be sure, we can use "-V 2" to see what is returned:
+In the previous example, we tried to follow HTTP 301 and HTTP 302 redirects. However, we recieved a response of "unable to follow" - This is because the HTTP Location header was not found in the orginal response. This could be because it truly did not exist or it could be that our response buffer is not large enough to contain the Location header. To be sure, we can use "-V 2" to see what is returned in each response:
 ```
 proxycheck -s localhost -p 8080 -H huac -I 2 -r -F "301, 302" -V 2
 bar.com
@@ -451,7 +451,7 @@ Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: actio
 Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
 ...
 ```
-Based on the previous example, we can see that it is possible our response buffer is not large enough. Let's try the requests again but specificy a larger buffer (Note: we only use "-B" as the default buffer this allocates should suffice in most cases). Take note that we were still unable to follow "bar.com", but we successfully followed "baz.com". We will look at why "bar.com" was not successful in the next example.
+Based on the previous example, we can see that it is possible our response buffer is not large enough. Let's try the requests again but specify a larger buffer. Note: We only use "-B" with its default buffer. In MOST cases, this is sufficient (we will see later why we state "MOST"). Take note that we were still unable to follow "bar.com", but we successfully followed "baz.com". We will begin to look at why "bar.com" was not successful in the next example.
 ```
 proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301,302 -B
 bar.com
@@ -465,7 +465,7 @@ Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: actio
 Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=baz.com: port=80: path=/quark/: ver=HTTP/1.1: status:200
 ...
 ```
-Recall that if when we get an "unable to follow" message, it means the Location header is not found in the response. Again, this could be because the Location header is not provided or our buffer is not sufficiently large enough to include it. Let's just look at "bar.com" and see of we can narrow it down - to do this, let's use our verbosity option again and look at the response - IMPORTANT: Notice, how we are using the default buffer with "-B":
+Recall that if we us e "-F" and we get an "unable to follow" message, it means the Location header is not found in the response. Again, this could be because the Location header is not truly provided or our buffer is not sufficiently large enough to include it. Let's just look at "bar.com" and see if we can narrow it down. To do this, let's use our verbosity option again and look at the response - IMPORTANT: Notice, how we are using the default buffer with "-B" (This is to illustrate why the default response buffer may not always be sufficient, when trying to follow redirects):
 ```
 echo bar.com | ./proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301 -B -V 2
 
@@ -486,7 +486,7 @@ Sun Feb  3 13:56:11 2019: proxycheck: STANDARD: dst=localhost: dport=8080: actio
 Sun Feb  3 13:56:11 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
 ...
 ```
-In the previous example, we examined the response using just "-B" and we did not see a Location header. This explains why we could not orignally follow it. We could call it a day or we could check to see if, given a more sizeable buffer, we still do not see a Location header. This time, we increase the size of the buffer to 4096 bytes - Note, that proxycheck is now able to follow the redirect as desired:
+In the previous example, we examined the response using just "-B" and we did not see a Location header. This explains why we could not orignally follow it. We could call it a day or we could check to see if, given a more sizeable buffer, we still do not see a Location header. This time, we increase the size of the buffer to 4096 bytes (this is an arbitrary value but we wanted something that was reasonable to hold the headers) - Note: We can't control where the server side decides to place the Location header or even that it includes it. This example demonstrates that although "-B" alone will be enough in MOST situations, it can be useful to specify a response buffer. We can see with the increased buffer that proxycheck is now able to follow the redirect as desired:
 ```
 echo bar.com | ./proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301 -B 4096 -V 2
 
