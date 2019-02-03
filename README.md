@@ -338,7 +338,7 @@ Date: Mon, 21 Jan 2019 02:57:05 GMT
 Connection: close
 ...
 ```
-We can see that either the specififed method (HEAD) is not implemented or allowed. We issue the check again but leverage the HTTP GET (which is the current default) instead of the HEAD method. Verbosity level is omitted thos time since we no longer need that level of detail:
+We can see that either the specififed method (HEAD) is not implemented or allowed. We issue the check again but leverage the HTTP GET (which is the current default) instead of the HEAD method. Verbosity level is omitted this time since we no longer need that level of detail:
 ```
 proxycheck -H acuh -s localhost -p 8080 -r "www.foobar.com; http://www.example.com/some/page.html, www.google.com|www.bing.com;github.com"
 
@@ -348,5 +348,168 @@ Sun Jan 20 20:00:55 2019: proxycheck: WARN: STANDARD: dst=localhost: dport=8080:
 Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.google.com: port=80: path=/: ver=HTTP/1.1: status:200
 Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=www.bing.com: port=80: path=/: ver=HTTP/1.1: status:200
 Sun Jan 20 20:00:56 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=github.com: port=80: path=/: ver=HTTP/1.1: status:301
+...
+```
+In this example, there is a slower response from the server. The default timeout is 10 seconds, but this can still be undesireable if we have a lot of URLs/domains to process -- Note the timeout for each is 10 seconds before proxycheck moves on:
+```
+proxycheck -s localhost -p 8080 -H huac -R test-urls.txt
+
+...
+Sun Feb  3 13:25:16 2019: proxycheck: validation complete - starting
+Sun Feb  3 13:25:16 2019: proxycheck: client [neo] > server [localhost/8080]
+Sun Feb  3 13:25:16 2019: proxycheck: socket proto: TCP
+Sun Feb  3 13:25:16 2019: proxycheck: include header=Accept
+Sun Feb  3 13:25:16 2019: proxycheck: include header=Connection
+Sun Feb  3 13:25:16 2019: proxycheck: include header=Host
+Sun Feb  3 13:25:16 2019: proxycheck: include header=User-Agent
+Sun Feb  3 13:25:16 2019: proxycheck: building request(s)
+Sun Feb  3 13:25:16 2019: proxycheck: requests built: 27
+Sun Feb  3 13:25:16 2019: proxycheck: request: processing
+Sun Feb  3 13:25:26 2019: proxycheck: WARN: STANDARD: read=Resource temporarily unavailable: dst=localhost: dport=8080: action=readreq: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1
+Sun Feb  3 13:25:36 2019: proxycheck: WARN: STANDARD: read=Resource temporarily unavailable: dst=localhost: dport=8080: action=readreq: verb=GET: domain=www.bar.com: port=80: path=/sample.html: ver=HTTP/1.1
+Sun Feb  3 13:25:46 2019: proxycheck: WARN: STANDARD: read=Resource temporarily unavailable: dst=localhost: dport=8080: action=readreq: verb=GET: domain=baz.com: port=80: path=/: ver=HTTP/1.1
+...
+```
+We can choose to speed processing up a bit and specify a shorter duration with "-I" - Here, we choose to wait for 2 seconds before moving on:
+```
+proxycheck -s localhost -p 8080 -H huac -R test-urls.txt -I 2
+
+...
+Sun Feb  3 13:30:02 2019: proxycheck: validation complete - starting
+Sun Feb  3 13:30:02 2019: proxycheck: client [neo] > server [localhost/8080]
+Sun Feb  3 13:30:02 2019: proxycheck: socket proto: TCP
+Sun Feb  3 13:30:02 2019: proxycheck: include header=Accept
+Sun Feb  3 13:30:02 2019: proxycheck: include header=Connection
+Sun Feb  3 13:30:02 2019: proxycheck: include header=Host
+Sun Feb  3 13:30:02 2019: proxycheck: include header=User-Agent
+Sun Feb  3 13:30:02 2019: proxycheck: building request(s)
+Sun Feb  3 13:30:02 2019: proxycheck: requests built: 27
+Sun Feb  3 13:30:02 2019: proxycheck: request: processing
+Sun Feb  3 13:30:04 2019: proxycheck: WARN: STANDARD: read=Resource temporarily unavailable: dst=localhost: dport=8080: action=readreq: verb=GET: domain=www.foobar.com: port=80: path=/: ver=HTTP/1.1
+Sun Feb  3 13:30:06 2019: proxycheck: WARN: STANDARD: read=Resource temporarily unavailable: dst=localhost: dport=8080: action=readreq: verb=GET: domain=www.bar.com: port=80: path=/sample.html: ver=HTTP/1.1
+Sun Feb  3 13:30:08 2019: proxycheck: WARN: STANDARD: read=Resource temporarily unavailable: dst=localhost: dport=8080: action=readreq: verb=GET: domain=baz.com: port=80: path=/: ver=HTTP/1.1
+...
+```
+In this example, we are testing two sites entered manually. Whem we are done, we send an EOF - Take note of the HTTP status responses returned:
+```
+proxycheck -s localhost -p 8080 -H huac -I 2 -r
+bar.com
+baz.com
+<EOF Given Here>
+Sun Feb  3 13:33:57 2019: proxycheck: validation complete - starting
+Sun Feb  3 13:33:57 2019: proxycheck: client [neo] > server [localhost/8080]
+Sun Feb  3 13:33:57 2019: proxycheck: socket proto: TCP
+Sun Feb  3 13:33:57 2019: proxycheck: include header=Accept
+Sun Feb  3 13:33:57 2019: proxycheck: include header=Connection
+Sun Feb  3 13:33:57 2019: proxycheck: include header=Host
+Sun Feb  3 13:33:57 2019: proxycheck: include header=User-Agent
+Sun Feb  3 13:33:57 2019: proxycheck: building request(s)
+Sun Feb  3 13:33:57 2019: proxycheck: requests built: 2
+Sun Feb  3 13:33:57 2019: proxycheck: request: processing
+Sun Feb  3 13:33:58 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=bar.com: port=80: path=/: ver=HTTP/1.1: status:301
+Sun Feb  3 13:33:58 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=baz.com: port=80: path=/: ver=HTTP/1.1: status:302
+Sun Feb  3 13:33:58 2019: proxycheck: processing complete
+Sun Feb  3 13:33:58 2019: proxycheck: cleaning up
+Sun Feb  3 13:33:58 2019: proxycheck: finished
+```
+If we decided that we want to follow these redirects, we cann use "-F" and specify the status codes we want to follow. Note, the result of "unable to follow":
+```
+proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301,302
+bar.com
+baz.com
+<EOF Given Here>
+Sun Feb  3 13:38:04 2019: proxycheck: validation complete - starting
+Sun Feb  3 13:38:04 2019: proxycheck: client [neo] > server [localhost/8080]
+Sun Feb  3 13:38:04 2019: proxycheck: socket proto: TCP
+Sun Feb  3 13:38:04 2019: proxycheck: include header=Accept
+Sun Feb  3 13:38:04 2019: proxycheck: include header=Connection
+Sun Feb  3 13:38:04 2019: proxycheck: include header=Host
+Sun Feb  3 13:38:04 2019: proxycheck: include header=User-Agent
+Sun Feb  3 13:38:04 2019: proxycheck: building request(s)
+Sun Feb  3 13:38:04 2019: proxycheck: requests built: 2
+Sun Feb  3 13:38:04 2019: proxycheck: request: processing
+Sun Feb  3 13:38:06 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=bar.com: port=80: path=/: ver=HTTP/1.1: status:301
+Sun Feb  3 13:38:06 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
+Sun Feb  3 13:38:06 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=baz.com: port=80: path=/: ver=HTTP/1.1: status:302
+Sun Feb  3 13:38:06 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
+...
+```
+In the previous example, we tried to follow HTTP 301 and HTTP 302 redirects. However, we recieved a response of "unable to follow" - This is because the HTTP Location header was not found in the orginal response returned. This could be because it truly did not exist or it could be that our response buffer is not large enough to contain the Location header. To be sure, we can use "-V 2" to see what is returned:
+```
+proxycheck -s localhost -p 8080 -H huac -I 2 -r -F "301, 302" -V 2
+bar.com
+baz.com
+<EOF Given Here>
+...
+Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.1 301 Moved Permanently
+Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=bar.com: port=80: path=/: ver=HTTP/1.1: status:301
+Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
+Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.1 302 Found
+Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=baz.com: port=80: path=/: ver=HTTP/1.1: status:302
+Sun Feb  3 13:42:52 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
+...
+```
+Based on the previous example, we can see that it is possible our response buffer is not large enough. Let's try the requests again but specificy a larger buffer (Note: we only use "-B" as the default buffer this allocates should suffice in most cases). Take note that we were still unable to follow "bar.com", but we successfully followed "baz.com". We will look at why "bar.com" was not successful in the next example.
+```
+proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301,302 -B
+bar.com
+baz.com
+<EOF Given Here>
+...
+Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=bar.com: port=80: path=/: ver=HTTP/1.1: status:301
+Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
+Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=baz.com: port=80: path=/: ver=HTTP/1.1: status:302
+Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=http://baz.com/quark/: attempting to follow previous 302
+Sun Feb  3 13:50:00 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=baz.com: port=80: path=/quark/: ver=HTTP/1.1: status:200
+...
+```
+Recall that if when we get an "unable to follow" message, it means the Location header is not found in the response. Again, this could be because the Location header is not provided or our buffer is not sufficiently large enough to include it. Let's just look at "bar.com" and see of we can narrow it down - to do this, let's use our verbosity option again and look at the response - IMPORTANT: Notice, how we are using the default buffer with "-B":
+```
+echo bar.com | ./proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301 -B -V 2
+
+...
+Sun Feb  3 13:56:11 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 03 Feb 2019 20:56:11 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: close
+Set-Cookie: __cfduid=d69c23a485ece9dd691d7e48737c650f61549227370; expires=Mon, 03-Feb-20 20:56:10 GMT; path=/; domain=.bar.com; HttpOnly
+X-Powered-By: PHP/5.5.38
+Referrer-Policy: unsafe-url
+x-frame-options: DENY
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Set-Cookie: icwp-wpsf=8afc970823e84ddd202086bc8dd16766; expires=Sat, 07-Apr-2068 17:52:20 GMT; Max-Ag
+Sun Feb  3 13:56:11 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=bar.com: port=80: path=/: ver=HTTP/1.1: status:301
+Sun Feb  3 13:56:11 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=None: unable to follow
+...
+```
+In the previous example, we examined the response using just "-B" and we did not see a Location header. This explains why we could not orignally follow it. We could call it a day or we could check to see if, given a more sizeable buffer, we still do not see a Location header. This time, we increase the size of the buffer to 4096 bytes - Note, that proxycheck is now able to follow the redirect as desired:
+```
+echo bar.com | ./proxycheck -s localhost -p 8080 -H huac -I 2 -r -F 301 -B 4096 -V 2
+
+...
+Sun Feb  3 13:57:01 2019: proxycheck: STANDARD: dst=localhost: dport=8080: response:
+HTTP/1.1 301 Moved Permanently
+Date: Sun, 03 Feb 2019 20:57:01 GMT
+Content-Type: text/html; charset=UTF-8
+Connection: close
+Set-Cookie: __cfduid=da0365dd8f2dddcad3831230635239b311549227420; expires=Mon, 03-Feb-20 20:57:00 GMT; path=/; domain=.bar.com; HttpOnly
+X-Powered-By: PHP/5.5.38
+Referrer-Policy: unsafe-url
+x-frame-options: DENY
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Set-Cookie: icwp-wpsf=655ed0e27f3e41a7a11511fcaa0cd709; expires=Sat, 07-Apr-2068 17:54:02 GMT; Max-Age=1551819421; path=/
+Location: https://bar.com/
+Server: cloudflare
+CF-RAY: 4a37ceb218cf3982-PHX
+Content-Length: 0
+
+
+Sun Feb  3 13:57:01 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=procresp: verb=GET: domain=bar.com: port=80: path=/: ver=HTTP/1.1: status:301
+Sun Feb  3 13:57:01 2019: proxycheck: STANDARD: dst=localhost: dport=8080: action=getlocation: location=https://bar.com/: attempting to follow previous 301
 ...
 ```
