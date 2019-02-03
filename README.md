@@ -111,7 +111,8 @@ Usage:
 			# HTTP response status only. If the option is provided
 			# and [resp-buf] is omitted, then the buffer will be
 			# increased to 512 bytes. Setting the buffer can be
-			# useful when using -V to view responses.
+			# useful when using -V to view responses or following
+			# redirects (see: -F).
 			# [NOTE]: When [resp-buf] is provided, the range is:
 			# 10 bytes - 65535 bytes.
 			#
