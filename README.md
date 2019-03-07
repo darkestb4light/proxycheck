@@ -2,7 +2,7 @@
 
 ## TODO
 
-This is a work in progress -- All options/arguments and functionality are subject to change. Code will be uploaded once I get to a good stopping point to upload it. I'm working on the base set of features that I sought to include when I orignially envisioned this tool. That said, everything noted in this README is up-to-date and reflects the current capability (especially the "Usage" and "Examples" sections). 
+This is a work in progress -- All options/arguments and functionality are subject to change. That said, everything noted in this README is up-to-date and reflects the current capability (especially the "Usage" and "Examples" sections). 
 
 ## Language
 
