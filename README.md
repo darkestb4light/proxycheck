@@ -88,14 +88,15 @@ Compiles and runs on:
 
 ## Compile:
 
+```
 gcc -o proxycheck proxycheck_main.c proxycheck.c
-
+```
 OR
-
+```
 gcc -std=<standard> -o proxycheck proxycheck_main.c proxycheck.c
 
-Where <standard> is: c99 or c11
-
+Where <standard> is: c99, c11, etc
+```
 
 ## Usage
 
