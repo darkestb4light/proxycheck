@@ -146,10 +146,10 @@
 #define EXIT_PROCRESP_407_ERR   0
 #endif
          
-#ifndef EXIT_PROCRESP_DEF_ERR                   /* STANDARD unknown fail */
-#define EXIT_PROCRESP_407_ERR   1
+#ifndef NO_EXIT_PROCRESP_DEF_ERR                /* STANDARD unknown fail */
+#define EXIT_PROCRESP_DEF_ERR   1
 #else
-#define EXIT_PROCRESP_407_ERR   0
+#define EXIT_PROCRESP_DEF_ERR   0
 #endif
 
 #ifdef OUTPUT_REQ                               /* See request payload; 

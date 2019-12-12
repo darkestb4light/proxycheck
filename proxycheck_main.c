@@ -617,6 +617,8 @@ int main(int argc, const char **argv)
               thisreq->domain, "port=", thisreq->port, "path=", 
               thisreq->path, "ver=", thisreq->ver, "status", status,
               RESP_MSG_407);
+      fprintf(stderr, "%s: %s: %s: %s\n", ts, NAME, "ERR",
+              "Exiting - Avoid this with macro: NO_EXIT_PROCRESP_407_ERR");
       exit(1);
 #else
       printf("%s: %s: %s: %s: %s%s: %s%d: ", ts, NAME, "WARN", 
@@ -644,6 +646,8 @@ int main(int argc, const char **argv)
               "action=procresp", "verb=", thisreq->verb, "domain=", 
               thisreq->domain, "port=", thisreq->port, "path=", 
               thisreq->path, "ver=", thisreq->ver, "status", status);
+      fprintf(stderr, "%s: %s: %s: %s\n", ts, NAME, "ERR",
+              "Exiting - Avoid this with macro: NO_EXIT_PROCRESP_DEF_ERR");
       exit(1);
 #else
       printf("%s: %s: %s: %s: %s%s: %s%d: ", ts, NAME, "WARN", 			
