@@ -1,25 +1,25 @@
 /*
-  Purpose:
-    Header file for "proxycheck".
-  Developer:
-    Ray Daley (https://github.com/darkestb4light)
-  Note:
-    - License: GNU General Public License Version 3
-    | This file is part of proxycheck.
-    |
-    | proxycheck is free software: you can redistribute it and/or modify
-    | it under the terms of the GNU General Public License as published by
-    | the Free Software Foundation, either version 3 of the License, or
-    | (at your option) any later version.
-    |
-    | proxycheck is distributed in the hope that it will be useful,
-    | but WITHOUT ANY WARRANTY; without even the implied warranty of
-    | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    | GNU General Public License for more details.
-    |
-    | You should have received a copy of the GNU General Public License
-    - Used with:
-    |__ proxycheck_main.c, proxycheck.c
+    Purpose:
+      Header file for "proxycheck".
+    Developer:
+      Ray Daley (https://github.com/darkestb4light)
+   Note:
+      - License: GNU General Public License Version 3
+      | This file is part of proxycheck.
+      |
+      | proxycheck is free software: you can redistribute it and/or modify
+      | it under the terms of the GNU General Public License as published by
+      | the Free Software Foundation, either version 3 of the License, or
+      | (at your option) any later version.
+      |
+      | proxycheck is distributed in the hope that it will be useful,
+      | but WITHOUT ANY WARRANTY; without even the implied warranty of
+      | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      | GNU General Public License for more details.
+      |
+      | You should have received a copy of the GNU General Public License
+      - Used with:
+      |__ proxycheck_main.c, proxycheck.c
 */
 
 #ifndef PROXYCHECK_H
@@ -29,7 +29,7 @@
 #define _GNU_SOURCE                             /* Don't modify */
 #include <strings.h>                            /* Don't modify */
 #elif defined(__APPLE__) || defined(__MACH__)
-/* intentionally empty */
+  /* intentionally empty */
 #elif defined(__CYGWIN__) && !defined(_WIN32)
 #define _GNU_SOURCE                             /* Don't modify */
 #include <strings.h>
@@ -40,6 +40,7 @@
 #error https://github.com/darkestb4light/proxycheck
 #endif           
 
+#include <ctype.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <netdb.h>
@@ -61,95 +62,105 @@
                                                    free() and submit a bug 
                                                    to the project  
                                                 */
-#define AVOID_MALLOC_FREE       1
+#define AVOID_MALLOC_FREE           1
 #else
-#define AVOID_MALLOC_FREE       0
+#define AVOID_MALLOC_FREE           0
 #endif
 
 #ifdef SOCK_PROTO_IP                            /* Request socket */
-#define SOCK_PROTO              0
+#define SOCK_PROTO                  0
 #else
-#define SOCK_PROTO              6
+#define SOCK_PROTO                  6
 #endif
+
+#ifndef NO_LIMIT_MAX_REDIRECTS                  /* Follow redirects "infinitely"
+                                                   or set a maximum before 
+                                                   giving up
+                                                 */
+#define MAX_REDIRECTS               3
+#else
+#define MAX_REDIRECTS               0
+#endif
+
 
 /* Debug definitions */
 
 #ifdef DEBUG_BUILDREQ                           /* Show built requests */
-#define DEBUG_BUILDREQ          1
+#define DEBUG_BUILDREQ              1
 #else
-#define DEBUG_BUILDREQ          0
+#define DEBUG_BUILDREQ              0
 #endif
 
 #ifdef DEBUG_PROCRESP                           /* Show processed responses */
-#define DEBUG_PROCRESP          1
+#define DEBUG_PROCRESP              1
 #else
-#define DEBUG_PROCRESP          0
+#define DEBUG_PROCRESP              0
 #endif
 
 #ifdef DEBUG_READREQ                            /* Show responses received */
-#define DEBUG_READREQ           1
+#define DEBUG_READREQ               1
 #else
-#define DEBUG_READREQ           0
+#define DEBUG_READREQ               0
 #endif
 
 #ifdef DEBUG_WRITEREQ                           /* Show requests sent */
-#define DEBUG_WRITEREQ          1
+#define DEBUG_WRITEREQ              1
 #else
-#define DEBUG_WRITEREQ          0
+#define DEBUG_WRITEREQ              0
 #endif
 
 #ifdef DEBUG_FORCE_EXIT                         /* Force exit with each debug */
-#define DEBUG_FORCE_EXIT        1
+#define DEBUG_FORCE_EXIT            1
 #else
-#define DEBUG_FORCE_EXIT        0
+#define DEBUG_FORCE_EXIT            0
 #endif
 
 #ifdef EXIT_CONN_WRITEREQ_ERR                   /* CONNECT request fail */
-#define EXIT_CONN_WRITEREQ_ERR  1
+#define EXIT_CONN_WRITEREQ_ERR      1
 #else
-#define EXIT_CONN_WRITEREQ_ERR  0
+#define EXIT_CONN_WRITEREQ_ERR      0
 #endif
 
 #ifdef EXIT_CONN_READREQ_ERR                    /* CONNECT response fail */
-#define EXIT_CONN_READREQ_ERR   1
+#define EXIT_CONN_READREQ_ERR       1
 #else
-#define EXIT_CONN_READREQ_ERR   0
+#define EXIT_CONN_READREQ_ERR       0
 #endif
 
 #ifdef EXIT_CONN_PROCRESP_ERR                   /* CONNECT parse fail */
-#define EXIT_CONN_PROCRESP_ERR  1
+#define EXIT_CONN_PROCRESP_ERR      1
 #else
-#define EXIT_CONN_PROCRESP_ERR  0
+#define EXIT_CONN_PROCRESP_ERR      0
 #endif
 
 #ifdef EXIT_WRITEREQ_ERR                        /* STANDARD request fail */
-#define EXIT_WRITEREQ_ERR       1
+#define EXIT_WRITEREQ_ERR           1
 #else
-#define EXIT_WRITEREQ_ERR       0
+#define EXIT_WRITEREQ_ERR           0
 #endif     
 
 #ifdef EXIT_READREQ_ERR                         /* STANDARD response fail */
-#define EXIT_READREQ_ERR        1
+#define EXIT_READREQ_ERR            1
 #else
-#define EXIT_READREQ_ERR        0
+#define EXIT_READREQ_ERR            0
 #endif 
 
 #ifdef EXIT_PROCRESP_400_ERR                    /* STANDARD HTTP 400 fail */
-#define EXIT_PROCRESP_400_ERR   1
+#define EXIT_PROCRESP_400_ERR       1
 #else
-#define EXIT_PROCRESP_400_ERR   0
+#define EXIT_PROCRESP_400_ERR       0
 #endif 
 
 #ifndef NO_EXIT_PROCRESP_407_ERR                /* STANDARD HTTP 407 fail */
-#define EXIT_PROCRESP_407_ERR   1
+#define EXIT_PROCRESP_407_ERR       1
 #else
-#define EXIT_PROCRESP_407_ERR   0
+#define EXIT_PROCRESP_407_ERR       0
 #endif
          
 #ifndef NO_EXIT_PROCRESP_DEF_ERR                /* STANDARD unknown fail */
-#define EXIT_PROCRESP_DEF_ERR   1
+#define EXIT_PROCRESP_DEF_ERR       1
 #else
-#define EXIT_PROCRESP_DEF_ERR   0
+#define EXIT_PROCRESP_DEF_ERR       0
 #endif
 
 #ifdef OUTPUT_REQ                               /* See request payload; 
@@ -157,9 +168,9 @@
                                                    to be modified to see 
                                                    desired results
                                                 */
-#define OUTPUT_REQ              1
+#define OUTPUT_REQ                  1
 #else
-#define OUTPUT_REQ              0
+#define OUTPUT_REQ                  0
 #endif
 
 #ifdef OUTPUT_RESP                              /* See request payload; 
@@ -167,23 +178,25 @@
                                                    be modified to see desired 
                                                    results
                                                 */	
-#define OUTPUT_RESP             1
+#define OUTPUT_RESP                 1
 #else
-#define OUTPUT_RESP             0
+#define OUTPUT_RESP                 0
 #endif
 
-#ifdef CONN_FORCE_GET_DEF_VERB                  /* Force CONNECT to use GET
-                                                   for default
+#ifdef NO_CONN_FORCE_GET_DEF_VERB               /* Avoid CONNECT forcing GET
+                                                   for default method;
+                                                   Ignored when CONNECT is 
+                                                   passed as an option
                                                 */
-#define CONN_FORCE_GET_DEF_VERB 1
+#define NO_CONN_FORCE_GET_DEF_VERB  1
 #else
-#define CONN_FORCE_GET_DEF_VERB 0
-#endif                  
+#define NO_CONN_FORCE_GET_DEF_VERB  0
+#endif
 
 /* General definitions */
 
 #define NAME                    "proxycheck"
-#define VERSION                 "0.0.1"         /* Current version */
+#define VERSION                 "0.0.2"         /* Current version */
 #define VER_BUF                 15              /* Version buffer */      
 #define NAME_SZ                 11              /* Should match NAME len */
 #define MAX_ARGS                17              /* Total args/opts */
@@ -226,7 +239,7 @@
                                                 */
 #define MAX_VERBS               4               /* HTTP methods; Don't modify */
 #define MAX_SCHEMES             2               /* HTTP schemes; Don't modify */
-#define MAX_REDIRECTS           4               /* HTTP redirects; 
+#define MAX_REDIRECT_TYPES      4               /* HTTP redirects; 
                                                    Don't modify 
                                                 */
 #define HOST_SZ                 256             /* Host buffer; Don't modify */
@@ -243,11 +256,16 @@
 
 #define REQ_VERB_SZ             8               /* Request method buffer */
 #define REQ_SCHEME_SZ           9               /* Request scheme buffer */
+#define REQ_PORT_SZ             6               /* Request port buffer */
 #define REQ_HTTP_PORT_DEF       80              /* Request def. HTTP port */
 #define REQ_HTTPS_PORT_DEF      443             /* Request def. HTTPS port */
 #define REQ_PATH_DEF            "/"             /* Request URI default */
 #define REQ_PATH_SZ             (2080+HOST_SZ)  /* URL buffer per request */
-#define REQ_HTTP_VER_DEF        "HTTP/1.1"      /* Request version default */
+#ifdef REQ_HTTP_VER1_0
+#define REQ_HTTP_VER_DEF        "HTTP/1.0"      /* Request version 1.0 */
+#else
+#define REQ_HTTP_VER_DEF        "HTTP/1.1"      /* Request version 1.1 */
+#endif
 #define REQ_HTTP_VER_SZ         9               /* HTTP version buffer */
 #define REQ_ACCEPT_HDR_DEF      "*/*"           /* Accept header default */
 
@@ -256,9 +274,11 @@
 #define REQ_ACCEPT_HDR_SZ       16              /* |__ Accept */
 #define REQ_USER_HDR_SZ         (12+NAME_SZ+4)  /* |__ User-Agent */
 #define REQ_CONN_HDR_SZ         (18+HOST_SZ+4)  /* |__ Host */
+
                                                 /* Request CONNECT buffer */
 #define REQ_CONN_SZ             (REQ_VERB_SZ+REQ_SCHEME_SZ+HOST_SZ+\
                                 REQ_PATH_SZ+REQ_HTTP_VER_SZ)
+                                
                                                 /* Request STANDARD buffer */
 #define REQ_SZ                  (REQ_CONN_SZ+REQ_HOST_HDR_SZ+\
                                 REQ_CONN_HDR_SZ)
@@ -267,49 +287,51 @@
 
 #define RESP_MSG_403            "Forbidden/Proxy denial"
 #define RESP_MSG_407            "Proxy Authentication Required"
-#define RESP_LOC_BUF            128             /* Response Location buffer */
+#define RESP_LOC_BUF            HOST_SZ         /* Response Location buffer */
 #define RESP_PROC_SZ            32              /* Response field buffer */	
 #define RESP_SZ_MIN             10              /* Minimum response buffer */	
 #define RESP_SZ_DEF             512             /* Default response buffer */
 #define RESP_SZ_MAX             65535           /* Maximum response buffer */
 
-struct Sockhost{                                /* hold client/server info */
-	char s_name[HOST_SZ];
-	char c_name[HOST_SZ];
-	char s_ip[HOST_SZ];	
-	int s_port;
+struct Sockhost{                                /* Hold client/server info */
+    char c_name[HOST_SZ];
+    char s_name[HOST_SZ];
+    char s_ip[HOST_SZ];	
+    int s_port;
 };
 
 struct requestopt {                             /* Request options */
-  char path[REQ_PATH_SZ];
-  char scheme[REQ_SCHEME_SZ];
-  char verb[REQ_VERB_SZ];
-  char ver[REQ_HTTP_VER_SZ];
-  char *hdr;
-  char *tmpurl;
-  int port;
-  unsigned int do_host_hdr;
-  unsigned int do_user_hdr;
-  unsigned int do_accept_hdr;
-  unsigned int do_conn_hdr;
-  unsigned int opt_scheme;
+    char path[REQ_PATH_SZ];
+    char scheme[REQ_SCHEME_SZ];
+    char tmpurlport[REQ_PORT_SZ];
+    char ver[REQ_HTTP_VER_SZ];
+    char verb[REQ_VERB_SZ];
+    char *tmpurl;
+    const char *hdr;
+    int port;
+    unsigned int do_accept_hdr;
+    unsigned int do_conn_hdr;
+    unsigned int do_host_hdr;
+    unsigned int do_user_hdr;
+    unsigned int opt_scheme;
 };
 
 struct request {                                /* Request object(s) */
-  char accept_hdr[REQ_ACCEPT_HDR_SZ];
-  char connverb[REQ_VERB_SZ];
-  char connreq[REQ_CONN_SZ];
-  char conn_hdr[REQ_CONN_HDR_SZ];
-  char domain[HOST_SZ];
-  char httpreq[REQ_SZ];
-  char host_hdr[REQ_HOST_HDR_SZ];
-  char path[REQ_PATH_SZ];
-  char scheme[REQ_SCHEME_SZ];
-  char user_hdr[REQ_USER_HDR_SZ];
-  char verb[REQ_VERB_SZ];
-  char ver[REQ_HTTP_VER_SZ];
-  unsigned int port;
-  struct request *next;
+    char accept_hdr[REQ_ACCEPT_HDR_SZ];
+    char conn_hdr[REQ_CONN_HDR_SZ];
+    char connreq[REQ_CONN_SZ];
+    char connverb[REQ_VERB_SZ];
+    char domain[HOST_SZ];
+    char host_hdr[REQ_HOST_HDR_SZ];
+    char httpreq[REQ_SZ];
+    char path[REQ_PATH_SZ];
+    char port[REQ_PORT_SZ];
+    char scheme[REQ_SCHEME_SZ];
+    char user_hdr[REQ_USER_HDR_SZ];
+    char ver[REQ_HTTP_VER_SZ];
+    char verb[REQ_VERB_SZ];
+    unsigned int valid_request;
+    struct request *next;
 };
 
 /* Prototypes */
@@ -317,7 +339,7 @@ struct request {                                /* Request object(s) */
 void buildreq(struct request *, struct requestopt *);
 int daemonize(pid_t *, char *);
 int getaddr(const char *, char *, const int);
-int getlocation(char *, unsigned int, char *, unsigned int);
+int getlocation(char *, unsigned int, char *, unsigned int, char *);
 int getreqcount(struct request *);
 void getreqline(char *, size_t, FILE *, char *, long);
 int gettime(char *);
