@@ -1,0 +1,20 @@
+Version 0.0.2
+
+- Fixed issue when a domain is not present in a Location header
+- Fixed core dump when attempting to process a linked list node that is NULL
+- Preferred headers passed via argument list reflect properly when debugging
+- Reimplemented buildreq() and fixed numerous logic issues
+- HTTP Version can be HTTP 1.0 or HTTP 1.1 (defaults to 1.1)
+- Overriding ports works as intended now
+- Enhanced output to stdout/stderr and log
+- Fixed abort trap when following an HTTP 3xx and Location header contained an 
+appended port and new request but now built properly
+- Redirects limited to avoid circular references (ex: www.bilibili.com); can 
+override with "NO_LIMIT_MAX_REDIRECTS" directive
+- Timestamps consistently applied
+- Debugging directive outputs enhanced
+- Misc clean up / enhancements / fixes
+
+Version 0.0.1
+
+- Initial release
