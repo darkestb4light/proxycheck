@@ -142,8 +142,8 @@ Usage:
 			# using more than one, they should be appended.
 			# Supported headers:
 			#	- A or a (adds Accept header)
-			#	- C or c (adds Host header)
-			#	- H or h (adds Connection header)
+			#	- C or c (adds Connection header)
+			#	- H or h (adds Host header)
 			#	- U or u (adds User-Agent header)
 			# [NOTE]: Some servers expect certain headers (such
 			# as a Host header) and might respond with an error
