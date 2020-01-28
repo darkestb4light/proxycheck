@@ -13,6 +13,7 @@ appended port and new request but now built properly
 override with "NO_LIMIT_MAX_REDIRECTS" directive
 - Timestamps consistently applied
 - Debugging directive outputs enhanced
+- Fixed issue where -S was not being treated as case-insenstive
 - Misc clean up / enhancements / fixes
 
 Version 0.0.1
