@@ -83,6 +83,9 @@ void buildreq(struct request *req, struct requestopt *reqopt)
     else
         tmpurl[len] = '\0';
 
+    for(int i = 0; reqopt->scheme[i] != '\0'; ++i) 
+        reqopt->scheme[i] = tolower(reqopt->scheme[i]);
+
     /* Parse for method */
     if(strstr(tmpurl, "http://") != NULL){
         if(strncasecmp(reqopt->verb, "CONNECT", strlen(req->verb)+1) == 0){
